@@ -1,0 +1,40 @@
+name: Tests
+
+on: [push]
+
+# TODO: Add Windows job after Swift is added to the Windows images [1] or after
+# `swift-actions/setup-swift` supports Swift 5.8+ on Windows [2].
+# 1. https://github.com/actions/runner-images/issues/8281
+# 2. https://github.com/swift-actions/setup-swift/pull/470#issuecomment-1718406382
+jobs:
+  test-macos:
+    name: Run Tests on macOS
+    # TODO: Use `macos-latest` after the macOS 13 image graduates to GA.
+    # https://github.com/actions/runner-images/issues/7508#issuecomment-1718206371
+    runs-on: macos-13
+
+    steps:
+      - name: Install msgpack-c
+        run: |
+          brew update
+          brew install msgpack
+      - name: Print Swift compiler version
+        run: "swift --version"
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: "swift test --configuration release -Xswiftc -cross-module-optimization"
+
+  test-linux:
+    name: Run Tests on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install msgpack-c
+        run: |
+          sudo apt-get update
+          sudo apt-get install libmsgpack-dev
+      - name: Print Swift compiler version
+        run: "swift --version"
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: "swift test --configuration release -Xswiftc -cross-module-optimization"
