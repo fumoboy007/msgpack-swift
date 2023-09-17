@@ -22,6 +22,7 @@
 
 import MessagePack
 
+import FlightSchoolMessagePack
 import Logging
 import MessagePacker
 import SwiftMsgpack
@@ -36,6 +37,7 @@ final class Benchmarks: XCTestCase {
       let alpacaTradeEvent = AlpacaTradeEvent.fake
       let alpacaTradeEventForSwiftMsgpack = AlpacaTradeEventForSwiftMsgpack(alpacaTradeEvent)
       let alpacaTradeEventForMessagePacker = AlpacaTradeEventForMessagePacker(alpacaTradeEvent)
+      let alpacaTradeEventForFlightSchoolMessagePack = AlpacaTradeEventForFlightSchoolMessagePack(alpacaTradeEvent)
 
       try runBenchmark(blockUsingCurrentLibrary: {
          try Self.encodeAndDecodeUsingCurrentLibrary(alpacaTradeEvent)
@@ -45,6 +47,9 @@ final class Benchmarks: XCTestCase {
          },
          "hirotakan/MessagePacker": {
             try Self.encodeAndDecodeUsingMessagePackerLibrary(alpacaTradeEventForMessagePacker)
+         },
+         "Flight-School/MessagePack": {
+            try Self.encodeAndDecodeUsingFlightSchoolMessagePackLibrary(alpacaTradeEventForFlightSchoolMessagePack)
          }
       ])
    }
@@ -53,6 +58,7 @@ final class Benchmarks: XCTestCase {
       let alpacaQuoteEvent = AlpacaQuoteEvent.fake
       let alpacaQuoteEventForSwiftMsgpack = AlpacaQuoteEventForSwiftMsgpack(alpacaQuoteEvent)
       let alpacaQuoteEventForMessagePacker = AlpacaQuoteEventForMessagePacker(alpacaQuoteEvent)
+      let alpacaQuoteEventForFlightSchoolMessagePack = AlpacaQuoteEventForFlightSchoolMessagePack(alpacaQuoteEvent)
 
       try runBenchmark(blockUsingCurrentLibrary: {
          try Self.encodeAndDecodeUsingCurrentLibrary(alpacaQuoteEvent)
@@ -62,6 +68,9 @@ final class Benchmarks: XCTestCase {
          },
          "hirotakan/MessagePacker": {
             try Self.encodeAndDecodeUsingMessagePackerLibrary(alpacaQuoteEventForMessagePacker)
+         },
+         "Flight-School/MessagePack": {
+            try Self.encodeAndDecodeUsingFlightSchoolMessagePackLibrary(alpacaQuoteEventForFlightSchoolMessagePack)
          }
       ])
    }
@@ -87,6 +96,14 @@ final class Benchmarks: XCTestCase {
       let message = try encoder.encode(value)
 
       let decoder = MessagePacker.MessagePackDecoder()
+      _ = try decoder.decode(T.self, from: message)
+   }
+
+   private static func encodeAndDecodeUsingFlightSchoolMessagePackLibrary<T: Codable>(_ value: T) throws {
+      let encoder = FlightSchoolMessagePack.MessagePackEncoder()
+      let message = try encoder.encode(value)
+
+      let decoder = FlightSchoolMessagePack.MessagePackDecoder()
       _ = try decoder.decode(T.self, from: message)
    }
 

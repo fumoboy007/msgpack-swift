@@ -43,6 +43,7 @@ let package = Package(
    dependencies: [
       .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0"),
       .package(url: "https://github.com/apple/swift-log.git", from: "1.5.3"),
+      .package(url: "https://github.com/Flight-School/MessagePack.git", from: "1.2.4"),
       .package(url: "https://github.com/fumoboy007/MessagePackReferenceImplementation.git", from: "1.0.1"),
       .package(url: "https://github.com/hirotakan/MessagePacker.git", from: "0.4.7"),
       .package(url: "https://github.com/nnabeyang/swift-msgpack.git", from: "0.2.7"),
@@ -71,6 +72,9 @@ let package = Package(
          dependencies: [
             .product(name: "Logging", package: "swift-log"),
             "MessagePack",
+            .product(name: "MessagePack", package: "MessagePack", moduleAliases: [
+               "MessagePack": "FlightSchoolMessagePack",
+            ]),
             "MessagePacker",
             .product(name: "SwiftMsgpack", package: "swift-msgpack"),
          ]
