@@ -3,7 +3,7 @@
 An efficient, full-featured, and compliant [MessagePack](https://msgpack.org) implementation for Swift.
 
 ![Swift 5.9](https://img.shields.io/badge/swift-v5.9-%23F05138)
-![Linux, macOS 13, iOS 16, tvOS 16, watchOS 9](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%2013%20%7C%20iOS%2016%20%7C%20tvOS%2016%20%7C%20watchOS%209-blue)
+![Linux, visionOS 1, macOS 13, iOS 16, tvOS 16, watchOS 9](https://img.shields.io/badge/platform-Linux%20%7C%20visionOS%201%20%7C%20macOS%2013%20%7C%20iOS%2016%20%7C%20tvOS%2016%20%7C%20watchOS%209-blue)
 ![MIT License](https://img.shields.io/github/license/fumoboy007/msgpack-swift)
 ![Automated Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/fumoboy007/msgpack-swift/tests.yml?event=push&label=tests)
 

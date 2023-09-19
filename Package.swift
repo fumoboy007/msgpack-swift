@@ -22,6 +22,7 @@ let referenceImplementationSupportedPlatforms: [Platform] = {
 let package = Package(
    name: "msgpack-swift",
    platforms: [
+      .visionOS(.v1),
       .macOS(.v13),
       .macCatalyst(.v16),
       .iOS(.v16),
