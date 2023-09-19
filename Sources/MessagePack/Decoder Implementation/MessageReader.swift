@@ -22,26 +22,16 @@
 
 import Foundation
 
-#if compiler(>=5.9)
 struct MessageReader: ~Copyable {
-   private let message: Data
-   private var currentIndex: Int
-}
-#else
-struct MessageReader {
-   private let message: Data
-   private var currentIndex: Int
-}
-#endif
-
-extension MessageReader {
    enum ReadingError: Error {
       case notEnoughBytesRemainingForRequest(Int, UInt64)
    }
 
+   private let message: Data
+   private var currentIndex = 0
+
    init(message: Data) {
       self.message = message
-      self.currentIndex = 0
    }
 
    var remainingByteCount: Int {

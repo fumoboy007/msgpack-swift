@@ -25,31 +25,18 @@ import Foundation
 extension Date {
    private static let formatterWithoutFractionalSeconds: ISO8601DateFormatter = {
       let formatter = ISO8601DateFormatter()
-#if canImport(Darwin) || compiler(>=5.9)
       formatter.formatOptions = [
          .withInternetDateTime
       ]
-#else
-      formatter.formatOptions = [
-         .withInternetDateTime_nonDarwin
-      ]
-#endif
       return formatter
    }()
 
    private static let formatterWithFractionalSeconds: ISO8601DateFormatter = {
       let formatter = ISO8601DateFormatter()
-#if canImport(Darwin) || compiler(>=5.9)
       formatter.formatOptions = [
          .withInternetDateTime,
          .withFractionalSeconds
       ]
-#else
-      formatter.formatOptions = [
-         .withInternetDateTime_nonDarwin,
-         .withFractionalSeconds_nonDarwin
-      ]
-#endif
       return formatter
    }()
 

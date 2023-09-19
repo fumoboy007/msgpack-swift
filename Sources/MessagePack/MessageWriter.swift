@@ -22,7 +22,6 @@
 
 import Foundation
 
-#if compiler(>=5.9)
 public struct MessageWriter: ~Copyable {
    // TODO: Manually manage an unsafe mutable buffer pointer instead of using `Data`
    // after Swift 5.8 support is dropped. `Data` is slow to append single bytes
@@ -31,18 +30,7 @@ public struct MessageWriter: ~Copyable {
    // We need to wait until Swift 5.8 support is dropped because we need the
    // noncopyable struct feature. A class is another alternative but it is slow
    // because it needs to perform runtime checks to enforce exclusivity.
-   private(set) var message: Data
-}
-#else
-public struct MessageWriter {
-   private(set) var message: Data
-}
-#endif
-
-extension MessageWriter {
-   init() {
-      self.message = Data()
-   }
+   private(set) var message = Data()
 
    public mutating func write(byte: UInt8) {
       withUnsafePointer(to: byte) {

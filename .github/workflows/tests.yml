@@ -18,6 +18,9 @@ jobs:
         run: |
           brew update
           brew install msgpack
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
       - name: Print Swift compiler version
         run: "swift --version"
       - uses: actions/checkout@v3
