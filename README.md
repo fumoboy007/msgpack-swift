@@ -59,8 +59,7 @@ let myMessage = MyMessage(
    myBool: true,
    myOptionalDecimal: nil,
    myStringArray: ["hello", "world"],
-   myTimestamp: MessagePackTimestamp(secondsComponent: 1694398799,
-                                     nanosecondsComponent: 123)
+   myTimestamp: MessagePackTimestamp(internetDateTime: "2023-09-10T19:19:59.123456789-07:00")!
 )
 
 let encoder = MessagePackEncoder()
