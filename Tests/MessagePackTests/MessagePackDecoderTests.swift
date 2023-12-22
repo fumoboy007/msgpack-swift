@@ -105,7 +105,7 @@ class MessagePackDecoderTests: XCTestCase {
       try test(UInt64.self)
    }
 
-   private func test<T>(_ type: T.Type) throws where T: FixedWidthInteger & Decodable {
+   private func test<T>(_ type: T.Type) throws where T: BinaryInteger & Decodable {
       var valuesToTest = [T]()
 
       let negativeValuesToTest = [
@@ -149,25 +149,6 @@ class MessagePackDecoderTests: XCTestCase {
 
       for value in valuesToTest {
          try test(value)
-      }
-
-      try test(type, encodedAs: Float32.self)
-      try test(type, encodedAs: Float64.self)
-   }
-
-   private func test<IntegerType, FloatingPointType>(
-      _ integerType: IntegerType.Type,
-      encodedAs floatingPointType: FloatingPointType.Type
-   ) throws where IntegerType: FixedWidthInteger & Decodable, FloatingPointType: BinaryFloatingPoint {
-      // Only test integers up to 16 bits so that the test does not take forever.
-      let valuesToTest = (Int16.min...Int16.max).compactMap { IntegerType(exactly: $0) }
-
-      for value in valuesToTest {
-         guard let floatingPointValue = FloatingPointType(exactly: value) else {
-            continue
-         }
-
-         try test(floatingPointValue, encodesAndThenDecodesTo: value)
       }
    }
 

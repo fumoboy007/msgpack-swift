@@ -29,19 +29,11 @@ extension BinaryInteger {
       case .unsignedInteger(let value):
          self.init(exactly: value)
 
-      case .float32(let value):
-         // Try to decode `Float32` as integer for interoperability with JavaScript applications
-         // where all numbers are floating point.
-         self.init(exactly: value)
-
-      case .float64(let value):
-         // Try to decode `Float64` as integer for interoperability with JavaScript applications
-         // where all numbers are floating point.
-         self.init(exactly: value)
-
       case .invalid,
             .nil,
             .boolean,
+            .float32,
+            .float64,
             .string,
             .binary,
             .array,
