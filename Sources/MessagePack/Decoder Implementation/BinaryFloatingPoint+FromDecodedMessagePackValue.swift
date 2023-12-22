@@ -23,6 +23,26 @@
 extension BinaryFloatingPoint {
    init?(exactly messagePackValue: DecodedMessagePackValue) {
       switch messagePackValue {
+      case .signedInteger(let value):
+         // Some languages like JavaScript do not allow the developer to specify whether a number is a floating point
+         // or integer value. A MessagePack encoder for such a language may choose to encode the number as an integer
+         // when possible--even if the developer knows that the intended type of the value should be a floating point
+         // type.
+         //
+         // Therefore, we should allow decoding integer values to floating point types for better interoperability
+         // with applications written in such languages.
+         guard let value = Self(exactly: value) else {
+            return nil
+         }
+         self = value
+
+      case .unsignedInteger(let value):
+         // See above comment for the `signedInteger` case.
+         guard let value = Self(exactly: value) else {
+            return nil
+         }
+         self = value
+
       case .float32(let value):
          if let value = Self(exactly: value) {
             self = value
@@ -44,8 +64,6 @@ extension BinaryFloatingPoint {
       case .invalid,
             .nil,
             .boolean,
-            .signedInteger,
-            .unsignedInteger,
             .string,
             .binary,
             .array,

@@ -167,6 +167,8 @@ class MessagePackDecoderTests: XCTestCase {
       for value in valuesToTest {
          try test(value)
       }
+
+      try testIntegerValues(decodeAs: Float32.self)
    }
 
    func testFloat32_nan() throws {
@@ -197,6 +199,8 @@ class MessagePackDecoderTests: XCTestCase {
       for value in valuesToTest {
          try test(value)
       }
+
+      try testIntegerValues(decodeAs: Float64.self)
    }
 
    func testFloat64_nan() throws {
@@ -210,6 +214,37 @@ class MessagePackDecoderTests: XCTestCase {
       XCTAssertTrue(decodedValue.isNaN)
       XCTAssertTrue(decodedValue.isSignalingNaN)
       XCTAssertEqual(decodedValue.significandBitPattern, value.significandBitPattern)
+   }
+
+   private func testIntegerValues<FloatingPointType>(
+      decodeAs floatingPointType: FloatingPointType.Type
+   ) throws where FloatingPointType: BinaryFloatingPoint & Decodable {
+      try testValues(of: Int.self, decodeAs: floatingPointType)
+      try testValues(of: Int8.self, decodeAs: floatingPointType)
+      try testValues(of: Int16.self, decodeAs: floatingPointType)
+      try testValues(of: Int32.self, decodeAs: floatingPointType)
+      try testValues(of: Int64.self, decodeAs: floatingPointType)
+      try testValues(of: UInt.self, decodeAs: floatingPointType)
+      try testValues(of: UInt8.self, decodeAs: floatingPointType)
+      try testValues(of: UInt16.self, decodeAs: floatingPointType)
+      try testValues(of: UInt32.self, decodeAs: floatingPointType)
+      try testValues(of: UInt64.self, decodeAs: floatingPointType)
+   }
+
+   private func testValues<IntegerType, FloatingPointType>(
+      of integerType: IntegerType.Type,
+      decodeAs floatingPointType: FloatingPointType.Type
+   ) throws where IntegerType: BinaryInteger, FloatingPointType: BinaryFloatingPoint & Decodable {
+      // Only test integers up to 16 bits so that the test does not take forever.
+      let valuesToTest = (Int16.min...Int16.max).compactMap { IntegerType(exactly: $0) }
+
+      for value in valuesToTest {
+         guard let floatingPointValue = FloatingPointType(exactly: value) else {
+            continue
+         }
+
+         try test(value, encodesAndThenDecodesTo: floatingPointValue)
+      }
    }
 
    func testString() throws {
