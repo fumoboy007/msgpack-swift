@@ -20,12 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if canImport(Darwin)
 import Foundation
-#else
-// https://github.com/apple/swift-corelibs-foundation/issues/4687
-@preconcurrency import Foundation
-#endif
 
 extension DecodedMessagePackValue {
    private enum DecodingError: Error {
