@@ -26,7 +26,7 @@ import XCTest
 
 class MessageReaderTests: XCTestCase {
    func testReadByte() {
-      let message = Data([0, 1])
+      let message = Self.makeMessage(containing: [0, 1])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 2)
@@ -42,7 +42,7 @@ class MessageReaderTests: XCTestCase {
    }
 
    func testReadBytesIntoUnsafeRawBuffer_exactlyEnoughBytes() throws {
-      let message = Data([0, 1, 2])
+      let message = Self.makeMessage(containing: [0, 1, 2])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 3)
@@ -62,14 +62,14 @@ class MessageReaderTests: XCTestCase {
    }
 
    func testReadBytesIntoUnsafeRawBuffer_requestedByteCountExceedsMax() {
-      let message = Data([0])
+      let message = Self.makeMessage(containing: [0])
       var reader = MessageReader(message: message)
 
       XCTAssertThrowsError(try reader.reading(byteCount: UInt64.max, perform: { _ in }))
    }
 
    func testReadBytesIntoUnsafeRawBuffer_requestedByteCountExceedsAvailableByteCount() throws {
-      let message = Data([0, 1])
+      let message = Self.makeMessage(containing: [0, 1])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 2)
@@ -84,14 +84,14 @@ class MessageReaderTests: XCTestCase {
    }
 
    func testReadBytesIntoUnsafeRawBuffer_rethrowsBytesHandlerError() {
-      let message = Data([0])
+      let message = Self.makeMessage(containing: [0])
       var reader = MessageReader(message: message)
 
       XCTAssertThrowsError(try reader.reading(byteCount: 1) { _ in throw ErrorFake() })
    }
 
    func testReadBytesIntoData_exactlyEnoughBytes() throws {
-      let message = Data([0, 1, 2])
+      let message = Self.makeMessage(containing: [0, 1, 2])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 3)
@@ -107,14 +107,14 @@ class MessageReaderTests: XCTestCase {
    }
 
    func testReadBytesIntoData_requestedByteCountExceedsMax() {
-      let message = Data([0])
+      let message = Self.makeMessage(containing: [0])
       var reader = MessageReader(message: message)
 
       XCTAssertThrowsError(try reader.read(byteCount: UInt64.max))
    }
 
    func testReadBytesIntoData_requestedByteCountExceedsAvailableByteCount() throws {
-      let message = Data([0, 1])
+      let message = Self.makeMessage(containing: [0, 1])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 2)
@@ -127,7 +127,7 @@ class MessageReaderTests: XCTestCase {
    }
 
    func testReadBytes_allMethods() throws {
-      let message = Data([0, 1, 2])
+      let message = Self.makeMessage(containing: [0, 1, 2])
       var reader = MessageReader(message: message)
 
       XCTAssertEqual(reader.remainingByteCount, 3)
@@ -145,6 +145,16 @@ class MessageReaderTests: XCTestCase {
    }
 
    // MARK: - Private
+
+   private static func makeMessage(containing bytes: [UInt8]) -> Data {
+      let fillerByteCount = Int.random(in: 1...100)
+
+      var messageWithFillerBytes = Data(repeating: 0, count: fillerByteCount)
+      messageWithFillerBytes.append(contentsOf: bytes)
+
+      // Return a slice to verify that the implementation supports a non-zero start index.
+      return messageWithFillerBytes[fillerByteCount...]
+   }
 
    private func readBytesIntoUnsafeRawBuffer(byteCount: Int,
                                              from reader: inout MessageReader,

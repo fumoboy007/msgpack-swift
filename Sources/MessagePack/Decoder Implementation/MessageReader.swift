@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright © 2023 Darren Mo.
+// Copyright © 2023–2024 Darren Mo.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ struct MessageReader: ~Copyable {
 
       self.currentIndex = nextIndex
 
-      return message[currentIndex]
+      return message[message.startIndex + currentIndex]
    }
 
    mutating func reading<ByteCount, ReturnType>(
@@ -77,14 +77,16 @@ struct MessageReader: ~Copyable {
          throw ReadingError.notEnoughBytesRemainingForRequest(remainingByteCount, UInt64(byteCount))
       }
 
-      let startIndex = currentIndex
-      let endIndex = startIndex + byteCount
+      var startIndex = currentIndex
+      var endIndex = startIndex + byteCount
       guard endIndex <= message.count else {
          throw ReadingError.notEnoughBytesRemainingForRequest(remainingByteCount, UInt64(byteCount))
       }
 
       currentIndex = endIndex
 
+      startIndex += message.startIndex
+      endIndex += message.startIndex
       return message[startIndex..<endIndex]
    }
 }
