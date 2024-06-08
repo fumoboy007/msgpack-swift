@@ -32,6 +32,15 @@ public struct MessageWriter: ~Copyable {
    // because it needs to perform runtime checks to enforce exclusivity.
    private(set) var message = Data()
 
+   // Hack: This is a workaround for an issue (https://github.com/fumoboy007/msgpack-swift/issues/4)
+   // related to Whole Module Optimization in Swift 5.9+. Although the issue only
+   // appeared on Linux so far, add the workaround for every platform to be safe.
+   //
+   // TODO: Remove this workaround after the root cause has been fixed. See
+   // https://github.com/apple/swift/issues/70979 for more details.
+#if swift(>=5.9)
+   @inline(never)
+#endif
    public mutating func write(byte: UInt8) {
       withUnsafePointer(to: byte) {
          message.append($0, count: 1)
