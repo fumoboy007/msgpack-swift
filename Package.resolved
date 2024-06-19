@@ -14,7 +14,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fumoboy007/MessagePackReferenceImplementation.git",
       "state" : {
-        "revision" : "b9f346bb6dad8181204ddfa4c0219b58092d60c6",
+        "revision" : "6dea7c839bfb5502d7fb67c32d0d7300ec836b62",
         "version" : "1.0.1"
       }
     },

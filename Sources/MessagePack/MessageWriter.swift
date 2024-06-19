@@ -73,13 +73,7 @@ public struct MessageWriter: ~Copyable {
          return
       }
 
-      let pageSize = NSPageSize()
-      var newCapacityInPages = totalByteCount / pageSize
-      if totalByteCount > newCapacityInPages * pageSize {
-         newCapacityInPages += 1
-      }
-
-      capacity = newCapacityInPages * pageSize
+      capacity = NSRoundUpToMultipleOfPageSize(totalByteCount)
       precondition(totalByteCount <= capacity)
 
       let newBaseAddress = realloc(buffer.baseAddress, capacity)!.assumingMemoryBound(to: UInt8.self)
