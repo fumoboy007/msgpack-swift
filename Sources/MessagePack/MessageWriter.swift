@@ -76,7 +76,9 @@ public struct MessageWriter: ~Copyable {
       capacity = NSRoundUpToMultipleOfPageSize(totalByteCount)
       precondition(totalByteCount <= capacity)
 
-      let newBaseAddress = realloc(buffer.baseAddress, capacity)!.assumingMemoryBound(to: UInt8.self)
+      guard let newBaseAddress = realloc(buffer.baseAddress, capacity)?.assumingMemoryBound(to: UInt8.self) else {
+         fatalError("Out of memory. Cannot increase capacity of buffer.")
+      }
       buffer = UnsafeMutableBufferPointer(start: newBaseAddress,
                                           count: capacity)
    }
