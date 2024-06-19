@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright © 2023 Darren Mo.
+// Copyright © 2023–2024 Darren Mo.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,45 +23,83 @@
 import Foundation
 
 public struct MessageWriter: ~Copyable {
-   // TODO: Manually manage an unsafe mutable buffer pointer instead of using `Data`
-   // after Swift 5.8 support is dropped. `Data` is slow to append single bytes
-   // because it always calls `memmove` rather than just storing the byte.
-   //
-   // We need to wait until Swift 5.8 support is dropped because we need the
-   // noncopyable struct feature. A class is another alternative but it is slow
-   // because it needs to perform runtime checks to enforce exclusivity.
-   private(set) var message = Data()
+   static let initialCapacity = NSPageSize()
 
-   // Hack: This is a workaround for an issue (https://github.com/fumoboy007/msgpack-swift/issues/4)
-   // related to Whole Module Optimization in Swift 5.9+. Although the issue only
-   // appeared on Linux so far, add the workaround for every platform to be safe.
-   //
-   // TODO: Remove this workaround after the root cause has been fixed. See
-   // https://github.com/apple/swift/issues/70979 for more details.
-#if swift(>=5.9)
-   @inline(never)
-#endif
+   // Manually manage an unsafe mutable buffer pointer instead of using `Data`.
+   // `Data` is slow to append single bytes because it always calls `memmove`
+   // rather than just storing the byte.
+   private var buffer: UnsafeMutableBufferPointer<UInt8>! = .allocate(capacity: initialCapacity)
+   private var totalByteCount = 0
+
+   deinit {
+      buffer?.deallocate()
+   }
+
+   // MARK: - Writing Bytes
+
    public mutating func write(byte: UInt8) {
-      withUnsafePointer(to: byte) {
-         message.append($0, count: 1)
-      }
+      let writeIndex = totalByteCount
+
+      totalByteCount += 1
+      increaseCapacityIfNeeded()
+
+      buffer.initializeElement(at: writeIndex, to: byte)
    }
 
    public mutating func write(_ bytes: UnsafeRawBufferPointer) {
+      let writeStartIndex = totalByteCount
+
+      totalByteCount += bytes.count
+      increaseCapacityIfNeeded()
+
       bytes.withMemoryRebound(to: UInt8.self) { bytes in
-         guard let baseAddress = bytes.baseAddress else {
-            return
-         }
-         message.append(baseAddress, count: bytes.count)
+         let writeEndIndex = buffer[writeStartIndex..<totalByteCount].initialize(fromContentsOf: bytes)
+         precondition(writeEndIndex == totalByteCount)
       }
    }
 
    mutating func expectingWrites(byteCount: Int, writeBytes: (inout Self) -> Void) {
-      let byteCountBeforeWrites = message.count
+      let byteCountBeforeWrites = totalByteCount
 
       writeBytes(&self)
 
-      let writtenByteCount = message.count - byteCountBeforeWrites
+      let writtenByteCount = totalByteCount - byteCountBeforeWrites
       precondition(writtenByteCount == byteCount, "Expected \(byteCount) byte(s) to be written but found \(writtenByteCount).")
+   }
+
+   private mutating func increaseCapacityIfNeeded() {
+      var capacity = buffer.count
+      guard totalByteCount > capacity else {
+         return
+      }
+
+      let pageSize = NSPageSize()
+      var newCapacityInPages = totalByteCount / pageSize
+      if totalByteCount > newCapacityInPages * pageSize {
+         newCapacityInPages += 1
+      }
+
+      capacity = newCapacityInPages * pageSize
+      precondition(totalByteCount <= capacity)
+
+      let newBaseAddress = realloc(buffer.baseAddress, capacity)!.assumingMemoryBound(to: UInt8.self)
+      buffer = UnsafeMutableBufferPointer(start: newBaseAddress,
+                                          count: capacity)
+   }
+
+   // MARK: - Getting the Message
+
+   consuming func finish() -> Data {
+      guard let baseAddress = buffer.baseAddress else {
+         return Data()
+      }
+
+      // Set to `nil` so that `deinit` does not prematurely deallocate the buffer.
+      // The buffer’s lifetime will be managed by the `Data` instance.
+      buffer = nil
+
+      return Data(bytesNoCopy: baseAddress,
+                  count: totalByteCount,
+                  deallocator: .custom({ (baseAddress, _) in baseAddress.deallocate() }))
    }
 }

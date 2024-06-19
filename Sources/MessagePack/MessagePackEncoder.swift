@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright © 2023 Darren Mo.
+// Copyright © 2023–2024 Darren Mo.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,6 @@ public struct MessagePackEncoder {
 
       var messageWriter = MessageWriter()
       try messagePackValue.encode(to: &messageWriter)
-      return messageWriter.message
+      return messageWriter.finish()
    }
 }

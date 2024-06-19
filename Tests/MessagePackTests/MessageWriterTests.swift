@@ -28,7 +28,8 @@ class MessageWriterTests: XCTestCase {
    func testNoWrites() {
       let writer = MessageWriter()
 
-      XCTAssertEqual(writer.message, Data())
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data())
    }
 
    func testWriteByte() {
@@ -37,14 +38,15 @@ class MessageWriterTests: XCTestCase {
       let byte = UInt8.random(in: .min...(.max))
       Self.write(byte, to: &writer)
 
-      XCTAssertEqual(writer.message, Data([byte]))
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data([byte]))
    }
 
    func testWriteByte_multiple() {
       var writer = MessageWriter()
 
       var bytes = [UInt8]()
-      let byteCount = Int.random(in: 1...Int(UInt8.max))
+      let byteCount = MessageWriter.initialCapacity + 1
       for _ in 0..<byteCount {
          let byte = UInt8.random(in: .min...(.max))
          bytes.append(byte)
@@ -52,7 +54,8 @@ class MessageWriterTests: XCTestCase {
          Self.write(byte, to: &writer)
       }
 
-      XCTAssertEqual(writer.message, Data(bytes))
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data(bytes))
    }
 
    func testWriteBytes() {
@@ -66,7 +69,8 @@ class MessageWriterTests: XCTestCase {
 
       Self.write(bytes, to: &writer)
 
-      XCTAssertEqual(writer.message, Data(bytes))
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data(bytes))
    }
 
    func testWriteBytes_empty() {
@@ -74,14 +78,15 @@ class MessageWriterTests: XCTestCase {
 
       Self.write([], to: &writer)
 
-      XCTAssertEqual(writer.message, Data())
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data())
    }
 
    func testWriteBytes_multiple() {
       var writer = MessageWriter()
 
       var bytes = [UInt8]()
-      let byteCount = Int.random(in: 1...Int(UInt8.max))
+      let byteCount = MessageWriter.initialCapacity + 1
       for _ in 0..<byteCount {
          let byte = UInt8.random(in: .min...(.max))
          bytes.append(byte)
@@ -89,7 +94,8 @@ class MessageWriterTests: XCTestCase {
          Self.write([byte], to: &writer)
       }
 
-      XCTAssertEqual(writer.message, Data(bytes))
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data(bytes))
    }
 
    func testWriteByteAndWriteBytes() {
@@ -99,14 +105,15 @@ class MessageWriterTests: XCTestCase {
       Self.write(byte, to: &writer)
 
       var bytes = [UInt8]()
-      let byteCount = Int.random(in: 1...Int(UInt8.max))
+      let byteCount = MessageWriter.initialCapacity
       for _ in 0..<byteCount {
          bytes.append(.random(in: .min...(.max)))
       }
 
       Self.write(bytes, to: &writer)
 
-      XCTAssertEqual(writer.message, Data([byte]) + Data(bytes))
+      let writtenBytes = writer.finish()
+      XCTAssertEqual(writtenBytes, Data([byte]) + Data(bytes))
    }
 
    // MARK: - Private
