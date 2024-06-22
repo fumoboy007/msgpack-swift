@@ -44,7 +44,7 @@ Tested using real-world messages that are involved in high throughput or low lat
 
 ## Usage
 
-Below is a basic example. See the [documentation](https://fumoboy007.github.io/msgpack-swift/documentation/messagepack/) for more details.
+Below is a basic example. See the [documentation](https://swiftpackageindex.com/fumoboy007/msgpack-swift/documentation/messagepack) for more details.
 
 ```swift
 import MessagePack
