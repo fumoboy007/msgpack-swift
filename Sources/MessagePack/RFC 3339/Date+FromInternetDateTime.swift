@@ -23,23 +23,6 @@
 import Foundation
 
 extension Date {
-   private static let formatterWithoutFractionalSeconds: ISO8601DateFormatter = {
-      let formatter = ISO8601DateFormatter()
-      formatter.formatOptions = [
-         .withInternetDateTime
-      ]
-      return formatter
-   }()
-
-   private static let formatterWithFractionalSeconds: ISO8601DateFormatter = {
-      let formatter = ISO8601DateFormatter()
-      formatter.formatOptions = [
-         .withInternetDateTime,
-         .withFractionalSeconds
-      ]
-      return formatter
-   }()
-
    init?(internetDateTime string: String) {
       var hasFractionalSeconds = false
       self.init(internetDateTime: string, hasFractionalSeconds: &hasFractionalSeconds)
@@ -48,16 +31,35 @@ extension Date {
    init?(internetDateTime string: String, hasFractionalSeconds: inout Bool) {
       hasFractionalSeconds = string.reversed().contains(".")
 
+      // TODO: Use the modern and efficient `ISO8601FormatStyle` when it is available
+      // on non-Apple platforms.
       let formatter: ISO8601DateFormatter
       if hasFractionalSeconds {
-         formatter = Self.formatterWithFractionalSeconds
+         formatter = Self.makeFormatterWithFractionalSeconds()
       } else {
-         formatter = Self.formatterWithoutFractionalSeconds
+         formatter = Self.makeFormatterWithoutFractionalSeconds()
       }
 
       guard let date = formatter.date(from: string) else {
          return nil
       }
       self = date
+   }
+
+   private static func makeFormatterWithoutFractionalSeconds() -> ISO8601DateFormatter {
+      let formatter = ISO8601DateFormatter()
+      formatter.formatOptions = [
+         .withInternetDateTime
+      ]
+      return formatter
+   }
+
+   private static func makeFormatterWithFractionalSeconds() -> ISO8601DateFormatter {
+      let formatter = ISO8601DateFormatter()
+      formatter.formatOptions = [
+         .withInternetDateTime,
+         .withFractionalSeconds
+      ]
+      return formatter
    }
 }
