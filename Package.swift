@@ -19,7 +19,7 @@ let referenceImplementationSupportedPlatforms: [Platform] = {
 #endif
 }()
 
-let package = Package(
+var package = Package(
    name: "msgpack-swift",
    platforms: [
       .visionOS(.v1),
@@ -77,3 +77,11 @@ let package = Package(
       )
    ]
 )
+
+let commonSwiftSettings: [SwiftSetting] = [
+   .enableUpcomingFeature("StrictConcurrency"),
+]
+for index in (package.targets.startIndex)..<package.targets.endIndex {
+   let targetSpecificSwiftSettings = package.targets[index].swiftSettings ?? []
+   package.targets[index].swiftSettings = targetSpecificSwiftSettings + commonSwiftSettings
+}

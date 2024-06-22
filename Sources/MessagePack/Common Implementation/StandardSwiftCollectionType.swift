@@ -76,17 +76,17 @@ private struct StructMetadataRecord {
       return metadataRecordPointer.bindMemory(to: StructMetadataRecord.self, capacity: 1)
    }
 
-   private static let arrayNominalTypeDescriptor = Self.from(Array<Never>.self)!.pointee.nominalTypeDescriptor
+   private static nonisolated(unsafe) let arrayNominalTypeDescriptor = Self.from(Array<Never>.self)!.pointee.nominalTypeDescriptor
    var isArray: Bool {
       return nominalTypeDescriptor == Self.arrayNominalTypeDescriptor
    }
 
-   private static let setNominalTypeDescriptor = Self.from(Set<Never>.self)!.pointee.nominalTypeDescriptor
+   private static nonisolated(unsafe) let setNominalTypeDescriptor = Self.from(Set<Never>.self)!.pointee.nominalTypeDescriptor
    var isSet: Bool {
       return nominalTypeDescriptor == Self.setNominalTypeDescriptor
    }
 
-   private static let dictionaryNominalTypeDescriptor = Self.from(Dictionary<Never, Never>.self)!.pointee.nominalTypeDescriptor
+   private static nonisolated(unsafe) let dictionaryNominalTypeDescriptor = Self.from(Dictionary<Never, Never>.self)!.pointee.nominalTypeDescriptor
    var isDictionary: Bool {
       return nominalTypeDescriptor == Self.dictionaryNominalTypeDescriptor
    }

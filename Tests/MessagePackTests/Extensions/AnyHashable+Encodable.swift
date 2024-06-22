@@ -20,7 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension AnyHashable: Encodable {
+// This retroactive conformance of the external `AnyHashable` type should be safe.
+//
+// First, the conformance does not make much sense in general since it is not
+// guaranteed that the base value is `Encodable`, so it is unlikely that the Swift
+// standard library would add the conformance.
+//
+// Second, even if the standard library did add the conformance, the implementation
+// would be similar.
+//
+// TODO: Replace `Swift.Encodable` with `@retroactive Encodable` when the minimum
+// Swift version has been increased to version 6.
+extension AnyHashable: Swift.Encodable {
    private enum EncodeError: Error {
       case baseNotEncodable(Any.Type)
    }
