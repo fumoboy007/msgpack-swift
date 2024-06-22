@@ -63,7 +63,7 @@ private struct StructMetadataRecord {
    let kind: UInt
 
    // https://github.com/apple/swift/blob/68e1ba0a84b9ff65c71e70bf24ab1009ba872680/include/swift/ABI/Metadata.h#L1283
-   let nominalTypeDescriptor: UnsafeRawPointer
+   let nominalTypeDescriptorPointer: UInt
 
    static func from(_ type: Any.Type) -> UnsafePointer<StructMetadataRecord>? {
       let metadataRecordPointer = unsafeBitCast(type, to: UnsafeRawPointer.self)
@@ -76,19 +76,19 @@ private struct StructMetadataRecord {
       return metadataRecordPointer.bindMemory(to: StructMetadataRecord.self, capacity: 1)
    }
 
-   private static nonisolated(unsafe) let arrayNominalTypeDescriptor = Self.from(Array<Never>.self)!.pointee.nominalTypeDescriptor
+   private static let arrayNominalTypeDescriptorPointer = Self.from(Array<Never>.self)!.pointee.nominalTypeDescriptorPointer
    var isArray: Bool {
-      return nominalTypeDescriptor == Self.arrayNominalTypeDescriptor
+      return nominalTypeDescriptorPointer == Self.arrayNominalTypeDescriptorPointer
    }
 
-   private static nonisolated(unsafe) let setNominalTypeDescriptor = Self.from(Set<Never>.self)!.pointee.nominalTypeDescriptor
+   private static let setNominalTypeDescriptorPointer = Self.from(Set<Never>.self)!.pointee.nominalTypeDescriptorPointer
    var isSet: Bool {
-      return nominalTypeDescriptor == Self.setNominalTypeDescriptor
+      return nominalTypeDescriptorPointer == Self.setNominalTypeDescriptorPointer
    }
 
-   private static nonisolated(unsafe) let dictionaryNominalTypeDescriptor = Self.from(Dictionary<Never, Never>.self)!.pointee.nominalTypeDescriptor
+   private static let dictionaryNominalTypeDescriptorPointer = Self.from(Dictionary<Never, Never>.self)!.pointee.nominalTypeDescriptorPointer
    var isDictionary: Bool {
-      return nominalTypeDescriptor == Self.dictionaryNominalTypeDescriptor
+      return nominalTypeDescriptorPointer == Self.dictionaryNominalTypeDescriptorPointer
    }
 }
 
