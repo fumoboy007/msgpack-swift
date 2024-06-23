@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-The `MessagePackTests` target depends on the `MessagePackReferenceImplementation` [package](https://github.com/fumoboy007/MessagePackReferenceImplementation). That package requires the following software to be available in the [`PATH`](https://en.wikipedia.org/wiki/PATH_(variable)):
+The `MessagePackTests` target depends on the `MessagePackReferenceImplementation` [package](https://github.com/fumoboy007/MessagePackReferenceImplementation). That package requires the following software to be available on the system:
 - [`pkg-config`](https://www.freedesktop.org/wiki/Software/pkg-config/)
 - [`msgpack-c`](https://github.com/msgpack/msgpack-c)
 
