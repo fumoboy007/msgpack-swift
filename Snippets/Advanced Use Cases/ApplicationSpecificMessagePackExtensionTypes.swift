@@ -37,3 +37,11 @@ struct MyExtensionType: CodableAsMessagePackExtension {
       // Decode the value from the given bytes.
    }
 }
+
+// snippet.hide
+var decoder = MessagePackDecoder()
+// snippet.show
+// Register the type with the decoder before deserializing a message.
+decoder.applicationSpecificExtensionTypes = [
+   MyExtensionType.self
+]
