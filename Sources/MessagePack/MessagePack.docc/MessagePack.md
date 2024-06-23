@@ -1,14 +1,26 @@
 # ``MessagePack``
 
-Serialize `Codable` values to MessagePack bytes and deserialize `Codable` values from MessagePack bytes.
+An efficient, full-featured, and compliant MessagePack implementation.
 
 ## Overview
 
-Use ``MessagePackEncoder`` to serialize `Codable` values to MessagePack bytes. Use ``MessagePackDecoder`` to deserialize `Codable` values from MessagePack bytes.
+### Designed for Swift
 
-@Snippet(path: "msgpack-swift/Snippets/Overview")
+- Full integration with the `Codable` serialization system.
+- Support for standard `Foundation` value types such as `Date`, `URL`, `Data`, and `Decimal`.
+- Highly optimized for performance.
+
+### Fully Compliant with the MessagePack Specification
+
+- Support for MessagePack extension types like timestamp and application-specific extension types.
+- Automated tests verify compliance with the MessagePack [specification](https://github.com/msgpack/msgpack/blob/8aa09e2a6a9180a49fc62ecfefe149f063cc5e4b/spec.md) by testing against the `msgpack-c` [reference implementation](https://github.com/fumoboy007/MessagePackReferenceImplementation).
 
 ## Topics
+
+### Examples
+
+- <doc:Common-Use-Cases>
+- <doc:Advanced-Use-Cases>
 
 ### Serialization
 

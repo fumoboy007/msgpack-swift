@@ -23,6 +23,9 @@
 import Foundation
 
 extension Date {
+   /// Initializes the `Date` from a `MessagePackTimestamp` instance.
+   ///
+   /// - SeeAlso: ``MessagePackTimestamp/init(_:)``
    public init(_ messagePackTimestamp: MessagePackTimestamp) {
       var timeIntervalSince1970 = TimeInterval(messagePackTimestamp.secondsComponent)
       timeIntervalSince1970 += TimeInterval(messagePackTimestamp.nanosecondsComponent) / TimeInterval(1_000_000_000)

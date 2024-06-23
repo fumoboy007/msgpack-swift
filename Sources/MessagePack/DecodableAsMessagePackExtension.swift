@@ -31,5 +31,8 @@ public protocol DecodableAsMessagePackExtension {
    static var extensionTypeID: Int8 { get }
 
    /// Decodes the value from a MessagePack extension payload.
+   ///
+   /// - Postcondition: The passed-in buffer is still allocated after the initializer returns. The caller is
+   ///    responsible for managing its memory.
    init(decoding bytes: UnsafeRawBufferPointer) throws
 }

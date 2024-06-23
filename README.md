@@ -7,6 +7,29 @@ An efficient, full-featured, and compliant [MessagePack](https://msgpack.org) im
 ![MIT License](https://img.shields.io/github/license/fumoboy007/msgpack-swift)
 ![Automated Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/fumoboy007/msgpack-swift/tests.yml?event=push&label=tests)
 
+## Basic Usage
+
+```swift
+import MessagePack
+
+struct MyMessage: Codable {
+   // ...
+}
+let myMessage = MyMessage(
+   // ...
+)
+
+// Serialization
+let encoder = MessagePackEncoder()
+let serializedMessage = try encoder.encode(myMessage)
+
+// Deserialization
+let decoder = MessagePackDecoder()
+let deserializedMessage = try decoder.decode(MyMessage.self, from: serializedMessage)
+```
+
+See the [documentation](https://swiftpackageindex.com/fumoboy007/msgpack-swift/documentation/messagepack) for examples of more advanced use cases.
+
 ## Features
 
 - Full integration with Swift’s `Codable` serialization system.
@@ -41,30 +64,3 @@ An efficient, full-featured, and compliant [MessagePack](https://msgpack.org) im
 | [`Flight-School/MessagePack`](https://github.com/Flight-School/MessagePack) | Up to 6× slower. |
 
 Tested using real-world messages that are involved in high throughput or low latency use cases. Pull requests to [`Benchmarks.swift`](Tests/Benchmarks/Benchmarks.swift) are welcome if you know of similar use cases!
-
-## Usage
-
-Below is a basic example. See the [documentation](https://swiftpackageindex.com/fumoboy007/msgpack-swift/documentation/messagepack) for more details.
-
-```swift
-import MessagePack
-
-struct MyMessage: Codable {
-   let myBool: Bool
-   let myOptionalDecimal: Decimal?
-   let myStringArray: [String]
-   let myTimestamp: MessagePackTimestamp
-}
-let myMessage = MyMessage(
-   myBool: true,
-   myOptionalDecimal: nil,
-   myStringArray: ["hello", "world"],
-   myTimestamp: MessagePackTimestamp(internetDateTime: "2023-09-10T19:19:59.123456789-07:00")!
-)
-
-let encoder = MessagePackEncoder()
-let myMessageBytes = try encoder.encode(myMessage)
-
-let decoder = MessagePackDecoder()
-let myMessageDecoded = try decoder.decode(MyMessage.self, from: myMessageBytes)
-```

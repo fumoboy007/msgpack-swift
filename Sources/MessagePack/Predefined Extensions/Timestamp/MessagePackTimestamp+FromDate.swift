@@ -23,6 +23,11 @@
 import Foundation
 
 extension MessagePackTimestamp {
+   /// Initializes the timestamp from a `Date` instance.
+   ///
+   /// The nanoseconds component will be rounded using Swift’s default rounding rule.
+   ///
+   /// - SeeAlso: ``Foundation/Date/init(_:)``
    public init(_ date: Date) {
       let timeIntervalSince1970 = date.timeIntervalSince1970
 

@@ -22,6 +22,7 @@
 
 import Foundation
 
+/// Provides an interface to incrementally construct a message.
 public struct MessageWriter: ~Copyable {
    static let initialCapacity = NSPageSize()
 
@@ -37,6 +38,9 @@ public struct MessageWriter: ~Copyable {
 
    // MARK: - Writing Bytes
 
+   /// Appends a single byte to the message.
+   ///
+   /// - SeeAlso: ``write(_:)``
    public mutating func write(byte: UInt8) {
       let writeIndex = totalByteCount
 
@@ -46,6 +50,12 @@ public struct MessageWriter: ~Copyable {
       buffer.initializeElement(at: writeIndex, to: byte)
    }
 
+   /// Appends a buffer of bytes to the message.
+   ///
+   /// - Postcondition: The passed-in buffer is still allocated after the method returns. The caller is
+   ///    responsible for managing its memory.
+   ///
+   /// - SeeAlso: ``write(byte:)``
    public mutating func write(_ bytes: UnsafeRawBufferPointer) {
       let writeStartIndex = totalByteCount
 
