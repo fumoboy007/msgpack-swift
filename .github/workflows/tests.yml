@@ -9,9 +9,7 @@ on: [push]
 jobs:
   test-macos:
     name: Run Tests on macOS
-    # TODO: Use `macos-latest` after the macOS 13 image graduates to GA.
-    # https://github.com/actions/runner-images/issues/7508#issuecomment-1718206371
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
       - name: Install msgpack-c
