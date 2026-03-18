@@ -78,7 +78,9 @@ final class MessagePackValueToSwiftValueDecoder {
       }
 
       let nestedDecoder: MessagePackValueToSwiftValueDecoder
-      if let reusableNestedDecoder {
+      if let reusableNestedDecoder,
+         reusableNestedDecoder.codingPath.count >= codingPath.count
+      {
          reusableNestedDecoder.reset(for: nestedMessagePackValue,
                                      replacingCodingKeyAtIndex: codingPath.count,
                                      with: codingKey)
